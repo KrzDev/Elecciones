@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos1.css') }}">
+    <title>Votación Presidencial</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-dark bg-dark fixed-top" style="padding-right: 0px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Logo">
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-start bg-dark text-light" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menú de Navegación</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}">Votar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('reportes') }}">Reportes</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+  </nav>
+
+  <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h6 class="modal-title" id="exampleModalLabel">ELECCIONES PRESIDENCIALES 2026</h6>
+          
+        </div>
+        <div class="modal-body" id="modalMessage">
+          Bienvenidos a la elecciónes del nuevo Presidente de la Républica para el período 2026-2030
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ir a Votar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container flex-grow-1">
+    <h1 class="text-center">Candidatos Presidenciales</h1>
+    <div class="row">
+        {% for candidato in candidatos %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ url_for('mostrar_imagen', idP=candidato.id) }}" alt="{{ candidato.nombre }}" class="card-img-top">
+                
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ candidato.nombre }}</h5>
+                    <p class="card-text">{{ candidato.descripcion }}</p>
+                    <form class="vote-form" action="/votar" method="post">
+                        <input type="hidden" name="idCandidato" value="{{ candidato.id }}">
+                        <button type="submit" class="btn btn-success mt-2 btn-vote w-100">VOTAR</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+  
+  <footer class="bg-dark text-white py-4 fixed-bottom">
+    <div class="container text-center">
+        <p>&copy; 2024 Sitio Creado Por Grupo 6</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const forms = document.querySelectorAll('.vote-form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.mensaje);
+                    window.location.reload(); // Recargar la página después de cerrar el modal
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-vote').forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.closest('.card').classList.add('highlight');
+            });
+            button.addEventListener('mouseout', function() {
+                this.closest('.card').classList.remove('highlight');
+            });
+        });
+
+        var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        myModal.show();
+    });
+  </script>
+</body>
+</html>

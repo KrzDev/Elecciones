@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos1.css') }}">
+    <title>Reporte de Votos</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-dark bg-dark fixed-top" style="padding-right: 0px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-start bg-dark text-light" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menú de Navegación</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('index') }}">Votar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('reportes') }}">Reportes</a>
+                  </li>
+
+                <!-- Puedes agregar más opciones aquí -->
+              </ul>
+            </div>
+          </div>
+      </nav>
+      
+   
+    <div class="container flex-grow-1" style="margin-top: 80px;">
+        <h1 class="text-center">Reportes de la votaciones</h1>
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+                <label for="filter text-center">Filtrar por:</label>
+                <select id="filter" class="form-select">
+                    <option value="partido">Partido</option>
+                    <option value="candidato">Candidato</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Cantidad de Votos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vote-table-body">
+                        <!-- Filas de la tabla se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Sitio Creado Por Grupo 6</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterSelect = document.getElementById('filter');
+            filterSelect.addEventListener('change', updateTable);
+
+            // Función para actualizar la tabla
+            function updateTable() {
+                const filter = filterSelect.value;
+                fetch(`/get_votos?filter=${filter}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.getElementById('vote-table-body');
+                        tableBody.innerHTML = '';
+                        data.forEach(row => {
+                            const tr = document.createElement('tr');
+                            const tdName = document.createElement('td');
+                            tdName.textContent = row.nombre;
+                            const tdVotes = document.createElement('td');
+                            tdVotes.textContent = row.cantidad_votos;
+                            tr.appendChild(tdName);
+                            tr.appendChild(tdVotes);
+                            tableBody.appendChild(tr);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Inicializa la tabla
+            updateTable();
+        });
+    </script>
+
+</body>
+</html>

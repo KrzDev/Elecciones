@@ -1,0 +1,33 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.card {
+    width: 18rem; /* Puedes ajustar el tamaño de las tarjetas aquí */
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem; /* Añade padding para espacio interno */
+    transition: box-shadow 0.3s ease-in-out;
+}
+.card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    margin-bottom: 1rem; /* Añade margen para espacio entre la imagen y el contenido */
+}
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.highlight {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.navbar-brand img {
+    max-width: 100px; /* Ancho máximo de la imagen */
+    max-height: 40px; /* Altura máxima de la imagen */
+    height: auto;}
+
